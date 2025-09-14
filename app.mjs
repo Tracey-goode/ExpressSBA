@@ -20,3 +20,15 @@ app.set('views', './views');
 app.get('/', (req, res) => {
     res.render('index');
 });
+
+app.use('/books', booksRoute);
+
+//Error handling
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send ('!!Error!!');
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running at port: ${PORT}`);
+});
