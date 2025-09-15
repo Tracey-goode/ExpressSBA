@@ -3,7 +3,7 @@ import { validator } from '../middleware/validate.mjs';
 import { readFile, writeFile } from 'fs/promises'; // 
 
 const router = express.Router();
-const bookPath = '../data/books.json';
+const bookPath = './data/books.json';
 
 async function readBooks() {
     const data = await readFile(bookPath, 'utf-8');
@@ -16,7 +16,7 @@ async function writeBooks(data) {
 
 
 // Gett
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const books = await readBooks();
         const { genre } = req.query;
