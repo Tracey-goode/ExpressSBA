@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Books List</title>
+    <link rel="stylesheet" href="../styles/sytles.css">
+</head>
+
+<body>
+    <h1>All Books</h1>
+    <nav>
+        <a href="/">Home</a> | <a href="/books/new">Add a Book</a>
+    </nav>
+
+    <ul>
+        <% books.forEach(book=> { %>
+            <li>
+                <strong>
+                    <%= book.title %>
+                </strong> by <%= book.author %>
+                    (<%= book.genre %>)
+                        <form action="/books/<%= book.id %>?_method=DELETE" method="POST" style="display:inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+            </li>
+            <% }) %>
+    </ul>
+</body>
+
+</html>
