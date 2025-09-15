@@ -18,7 +18,7 @@ async function writeBooks(data) {
 // Gett
 router.get('/', async (req, res) => {
     try {
-        const books = readBooks();
+        const books = await readBooks();
         const { genre } = req.query;
         const filtered = genre ? books.filter(book => book.genre === genre) : books;
         res.render('books', {books: filtered });
@@ -27,4 +27,36 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET new book form
+router.get('/new', (req, res) => {
+    res.render('add-book');
+});
 
+// GET one book by ID
+router.get('/:id', async (req, res, next) => {
+    try {
+        const books = await readBooks();
+        const book = books.find(b => b.id == req.params.id);
+        if (!book) return res.status(404).send('Book not found');
+        res.json(book);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.post('/', validateBook, async (req, res, next) => {
+    try {
+        const books = await readBooks();
+        const newBook = {
+            id: Date.now(),
+            title: req.body.title,
+            author: req.body.author,
+            genre: req.body.genre,
+        };
+        books.push(newBook);
+        await writeBooks(books);
+        res.redirect('/books');
+    } catch (err) {
+        next(err);
+    }
+});
