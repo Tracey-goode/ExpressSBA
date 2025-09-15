@@ -44,7 +44,9 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-router.post('/', validateBook, async (req, res, next) => {
+
+// Post
+router.post('/', validator, async (req, res, next) => {
     try {
         const books = await readBooks();
         const newBook = {
@@ -60,3 +62,40 @@ router.post('/', validateBook, async (req, res, next) => {
         next(err);
     }
 });
+
+
+// Patch
+router.patch('/:id', async (req, res, next) => {
+    try {
+        const books = await readBooks();
+        const book = books.find(b => b.id == req.params.id);
+        if (!book) return res.status(404).send('Book not found');
+
+        Object.assign(book, req.body); // Merge changes
+        await writeBooks(books);
+        res.json(book);
+    } catch (err) {
+        next(err);
+    }
+});
+
+// Delete
+
+router.delete('/:id', async (req, res, next) => {
+    try {
+        let books = await readBooks();
+        const initialLength = books.length;
+        books = books.filter(b => b.id != req.params.id);
+
+        if (books.length === initialLength) {
+            return res.status(404).send('Book not found');
+        }
+
+        await writeBooks(books);
+        res.sendStatus(204);
+    } catch (err) {
+        next(err);
+    }
+});
+
+export default router;
